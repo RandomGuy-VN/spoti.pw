@@ -160,5 +160,14 @@
     "signed_at": "2026-10-05T09:30:05.695Z",
     "pull_request": 205,
     "evidence": "https://github.com/skopevoj/spoti.pw/pull/205"
+  },
+  {
+    "login": "Charlequin56",
+    "id": 68907948,
+    "cla": "1.0",
+    "via": "checkbox",
+    "signed_at": "2026-10-05T19:00:31.837Z",
+    "pull_request": 206,
+    "evidence": "https://github.com/skopevoj/spoti.pw/pull/206"
   }
 ]
