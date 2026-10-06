@@ -121,6 +121,10 @@ static NSDictionary *filterHubsDictionary(NSDictionary *dict) {
     return mutableDict;
 }
 
+@interface HUBViewModelBuilderImplementation : NSObject
+- (void)addJSONDictionary:(NSDictionary *)dictionary;
+@end
+
 %hook HUBViewModelBuilderImplementation
 - (void)addJSONDictionary:(NSDictionary *)dictionary {
     if (!SGAdBlockHubsEnabled() || !dictionary) {

@@ -3,6 +3,10 @@
 #import "Core/SGCore.h"
 #import "AdBlock.h"
 
+@interface SPTAdsProductState : NSObject
+- (BOOL)adsEnabled;
+@end
+
 %hook SPTAdsProductState
 - (BOOL)adsEnabled {
     if (SGAdBlockAudioVideoEnabled()) return NO;

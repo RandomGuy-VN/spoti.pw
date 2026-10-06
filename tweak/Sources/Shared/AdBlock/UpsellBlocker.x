@@ -4,6 +4,31 @@
 #import "AdBlock.h"
 #import <UIKit/UIKit.h>
 
+@interface _TtC37Messaging_ClientMessagingPlatformImpl33FullscreenContainerViewController : UIViewController
+@end
+
+@interface _TtC37Messaging_ClientMessagingPlatformImpl28ModalContainerViewController : UIViewController
+@end
+
+@interface _TtC37Messaging_ClientMessagingPlatformImpl52ClientMessagingPlatformBottomSheetPageViewController : UIViewController
+@end
+
+@interface _TtC37Messaging_ClientMessagingPlatformImpl33ClientMessagingPlatformBannerView : UIView
+@end
+
+@interface _TtC18Upsells_ElementKitP33_11E507536F1F78CA735FB7F17658749321UpsellBannerElementUI : UIView
+@end
+
+@interface _TtC24Jam_QueueIntegrationImpl28PremiumUpsellBannerElementUI : UIView
+@end
+
+@interface _TtC19ReinventFree_ECMKit25PremiumUpsellControlPanel : UIView
+@end
+
+@interface SPTEncorePopUpPresenter : NSObject
+- (void)presentPopUp:(id)popUp;
+@end
+
 // Upsell services
 %hook _TtC19Upsells_ServiceImpl18UpsellsServiceImpl
 - (void)load {
@@ -145,14 +170,11 @@
 - (void)didMoveToSuperview {
     %orig;
     if (SGAdBlockUpsellsEnabled()) {
-        if ([self isKindOfClass:UIView.class]) {
-            UIView *v = (UIView *)self;
-            v.hidden = YES;
-            v.userInteractionEnabled = NO;
-            if (v.superview) {
-                [v removeFromSuperview];
-                SGRecordBlockedAd(@"Popups & Upsells");
-            }
+        self.hidden = YES;
+        self.userInteractionEnabled = NO;
+        if (self.superview) {
+            [self removeFromSuperview];
+            SGRecordBlockedAd(@"Popups & Upsells");
         }
     }
 }
@@ -162,14 +184,11 @@
 - (void)didMoveToSuperview {
     %orig;
     if (SGAdBlockUpsellsEnabled()) {
-        if ([self isKindOfClass:UIView.class]) {
-            UIView *v = (UIView *)self;
-            v.hidden = YES;
-            v.userInteractionEnabled = NO;
-            if (v.superview) {
-                [v removeFromSuperview];
-                SGRecordBlockedAd(@"Popups & Upsells");
-            }
+        self.hidden = YES;
+        self.userInteractionEnabled = NO;
+        if (self.superview) {
+            [self removeFromSuperview];
+            SGRecordBlockedAd(@"Popups & Upsells");
         }
     }
 }
@@ -190,6 +209,8 @@
 %end
 
 // Legacy and Encore popups
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
 static BOOL isUpsellDialog(id popUp) {
     if (!popUp) return NO;
     NSString *title = nil;
@@ -222,6 +243,7 @@ static BOOL isUpsellDialog(id popUp) {
     }
     return NO;
 }
+#pragma clang diagnostic pop
 
 %hook SPTEncorePopUpPresenter
 - (void)presentPopUp:(id)popUp {

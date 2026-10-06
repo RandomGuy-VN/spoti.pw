@@ -68,6 +68,16 @@ static NSDictionary *rewriteProductDict(NSDictionary *dict) {
     return mutable;
 }
 
+@interface SPTCoreProductState : NSObject
+- (NSString *)stringForKey:(NSString *)key;
+- (id)objectForKeyedSubscript:(NSString *)key;
+- (NSDictionary *)values;
+- (NSDictionary *)originalValues;
+- (void)setOriginalValues:(NSDictionary *)dict;
+- (void)setOverrides:(NSDictionary *)dict;
+- (id)initWithValuesDict:(NSDictionary *)dict scheduler:(void *)scheduler;
+@end
+
 %hook SPTCoreProductState
 
 - (NSString *)stringForKey:(NSString *)key {

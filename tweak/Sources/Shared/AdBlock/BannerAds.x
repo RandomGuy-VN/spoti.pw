@@ -4,6 +4,18 @@
 #import "AdBlock.h"
 #import <UIKit/UIKit.h>
 
+@interface _TtC18AdsPlatform_ECMKit37AdsSponsoredPlaylistHeaderCentralView : UIView
+@end
+
+@interface _TtC35AdsEmbedded_EmbeddedCTAElementsImpl26EmbeddedAdAdapterElementUI : UIView
+@end
+
+@interface _TtC22AdsPlatform_ElementKit15HtmlAdElementUI : UIView
+@end
+
+@interface _TtC19AdsPlatform_DSAImpl11DSAMainView : UIView
+@end
+
 %hook _TtC35AdsEmbedded_AdsSponsoredContextImpl30AdsSponsoredContextServiceImpl
 - (void)load {
     if (SGAdBlockBannersEnabled()) {
@@ -150,14 +162,11 @@
 - (void)didMoveToSuperview {
     %orig;
     if (SGAdBlockBannersEnabled()) {
-        if ([self isKindOfClass:UIView.class]) {
-            UIView *v = (UIView *)self;
-            v.hidden = YES;
-            v.userInteractionEnabled = NO;
-            if (v.superview) {
-                [v removeFromSuperview];
-                SGRecordBlockedAd(@"Banners & Sponsored");
-            }
+        self.hidden = YES;
+        self.userInteractionEnabled = NO;
+        if (self.superview) {
+            [self removeFromSuperview];
+            SGRecordBlockedAd(@"Banners & Sponsored");
         }
     }
 }
@@ -167,14 +176,11 @@
 - (void)didMoveToSuperview {
     %orig;
     if (SGAdBlockBannersEnabled()) {
-        if ([self isKindOfClass:UIView.class]) {
-            UIView *v = (UIView *)self;
-            v.hidden = YES;
-            v.userInteractionEnabled = NO;
-            if (v.superview) {
-                [v removeFromSuperview];
-                SGRecordBlockedAd(@"Banners & Sponsored");
-            }
+        self.hidden = YES;
+        self.userInteractionEnabled = NO;
+        if (self.superview) {
+            [self removeFromSuperview];
+            SGRecordBlockedAd(@"Banners & Sponsored");
         }
     }
 }
@@ -184,13 +190,10 @@
 - (void)didMoveToSuperview {
     %orig;
     if (SGAdBlockBannersEnabled()) {
-        if ([self isKindOfClass:UIView.class]) {
-            UIView *v = (UIView *)self;
-            v.hidden = YES;
-            v.userInteractionEnabled = NO;
-            if (v.superview) {
-                [v removeFromSuperview];
-            }
+        self.hidden = YES;
+        self.userInteractionEnabled = NO;
+        if (self.superview) {
+            [self removeFromSuperview];
         }
     }
 }
