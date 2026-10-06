@@ -18,6 +18,7 @@
 #import "Settings/SGModPage.h"
 #import "Native/Home/Home.h"
 #import "Shared/Privacy/Privacy.h"
+#import "Shared/AdBlock/AdBlock.h"
 #import "Shared/Flags/Flags.h"
 #import "Shared/AudioEffects/AudioEffectsPage.h"
 #import "Shared/LiveActivity/LiveActivity.h"
@@ -48,6 +49,13 @@ static UIViewController *modSettingsPage(void) {
     // The audio effects work on the sound, so both looks have them, with what they are doing beside the chevron.
     SGModRow *audioEffects = pageRow(@"Audio effects", @"slider.vertical.3", ^UIViewController *{ return SGDSPSettingsPage(); });
     audioEffects.value = ^NSString *{ return SGDSPSummary(); };
+    SGModRow *adBlock = pageRow(@"Ad blocker", @"shield.lefthalf.filled", ^UIViewController *{ return SGAdBlockSettingsPage(); });
+    adBlock.value = ^NSString *{
+        if (!SGAdBlockEnabled()) return @"Off";
+        NSUInteger total = SGBlockedAdTotalCount();
+        if (total == 0) return @"Active";
+        return [NSString stringWithFormat:@"%lu blocked", (unsigned long)total];
+    };
     // Home & Library holds only the native look's switches, so the redesign has no such page; the
     // Live Activity works under both, and only where ActivityKit's card does.
     NSMutableArray<SGModRow *> *parts = [NSMutableArray arrayWithArray:@[
@@ -65,6 +73,7 @@ static UIViewController *modSettingsPage(void) {
         SGAppearanceSection(),
         SGSection(nil, parts),
         SGSection(nil, @[
+            adBlock,
             pageRow(@"Privacy & clutter", @"hand.raised", ^UIViewController *{ return SGPrivacySettingsPage(); }),
             pageRow(@"Labs", @"testtube.2", ^UIViewController *{ return SGLabsPage(); }),
         ]),

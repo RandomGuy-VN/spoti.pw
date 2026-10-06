@@ -71,6 +71,9 @@ A feature is a directory in its layer holding everything about one area of the a
 
 Shared:
 
+    AdBlock/      ad blocking across all surfaces (AudioVideoAds.x, BannerAds.x, HubsAdBlocker.x,
+                  UpsellBlocker.x, NetworkAdBlocker.x, ProductStateSpoofer.x), the forced flags (AdBlockFlags.m),
+                  the counters per category (AdBlockCounters.m), and the Ad blocker page in Mod Settings
     Privacy/      telemetry blocking and its counters, and the Search switches that force their flags off (Clutter.m)
     ArtistBlock/  tracks by blocked artists skipped as they start (ArtistSkip.x), the list and the Blocked artists page under Player
     Flags/        Spotify's remote-config flags: the provider hook, the generated table, the All flags page and the Labs page

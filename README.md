@@ -46,6 +46,18 @@ The redesign is `UIGlassEffect`, which only exists from iOS 26. Below that the R
 is greyed out and the mod runs Spotify's own screens with everything else it adds on top. Both live
 in Settings → Mod Settings.
 
+## Ad Blocker & Premium Features
+
+This fork integrates a comprehensive ad blocker directly into the tweak, working seamlessly under both the Redesigned UI and the Native look:
+
+- **Audio & Video Ads**: Suppresses in-stream audio ads and video interstitials.
+- **Banners & Sponsored Content**: Hides sponsored playlist headers, sponsored NPB attachments, brand banners, and leavebehind cards.
+- **Hubs & Clutter Filtering**: Cleans Home and Search from promotional shelves, carousels, and banner cards.
+- **Popups & Upsells**: Blocks ClientMessagingPlatform fullscreen takeovers, bottom sheets, and Encore upsell dialogs.
+- **Network Requests**: Intercepts advertising and tracking endpoints (`ad.spotify.com`, `/dac/view/v1/`, etc.) with instant 204 responses.
+- **Unlimited Skips & On-Demand Playback**: Spoofs product state to remove the 6-skips-per-hour limit and unlock track selection and seeking.
+- **Counters & Settings**: Configure toggles and monitor live blocked stats in **Settings → Mod Settings → Ad blocker**.
+
 ## Build it
 
 No IPA is distributed. Bring a decrypted **Spotify 9.1.78** IPA; you get an unsigned
