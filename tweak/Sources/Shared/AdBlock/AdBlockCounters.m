@@ -1,9 +1,10 @@
 // Ad blocking counters and preference accessors.
-// Keeps thread-safe tallies of blocked ads per category in NSUserDefaults.
 #import "Core/SGCore.h"
 #import "AdBlock.h"
+#import <os/lock.h>
 
 static NSString *const kAdBlockCountsKey = @"spotifyglass.adblock.counts";
+static os_unfair_lock sg_counterLock = OS_UNFAIR_LOCK_INIT;
 static NSMutableDictionary<NSString *, NSNumber *> *sg_adCounts;
 
 BOOL SGAdBlockEnabled(void) {
@@ -26,12 +27,8 @@ BOOL SGAdBlockUpsellsEnabled(void) {
     return SGAdBlockEnabled() && SGEnabled(SGKeyAdBlockUpsells);
 }
 
-BOOL SGAdBlockNetworkEnabled(void) {
-    return SGAdBlockEnabled() && SGEnabled(SGKeyAdBlockNetwork);
-}
-
-BOOL SGAdBlockPremiumSpoofEnabled(void) {
-    return SGAdBlockEnabled() && SGEnabled(SGKeyAdBlockPremiumSpoof);
+BOOL SGAdBlockPlaybackEnabled(void) {
+    return SGAdBlockEnabled() && SGEnabled(SGKeyAdBlockPlayback);
 }
 
 NSArray<NSString *> *SGBlockedAdCategories(void) {
@@ -39,8 +36,7 @@ NSArray<NSString *> *SGBlockedAdCategories(void) {
         @"Audio & Video",
         @"Banners & Sponsored",
         @"Hubs & Shelves",
-        @"Popups & Upsells",
-        @"Network Endpoints"
+        @"Popups & Upsells"
     ];
 }
 
@@ -50,43 +46,60 @@ static NSMutableDictionary<NSString *, NSNumber *> *countsLocked(void) {
         sg_adCounts = saved ? [saved mutableCopy] : [NSMutableDictionary dictionary];
         NSSet<NSString *> *valid = [NSSet setWithArray:SGBlockedAdCategories()];
         for (NSString *key in sg_adCounts.allKeys) {
-            if (![valid containsObject:key]) sg_adCounts[key] = nil;
+            if (![valid containsObject:key]) [sg_adCounts removeObjectForKey:key];
         }
     }
     return sg_adCounts;
 }
 
+static void scheduleSaveLocked(void) {
+    static dispatch_once_t onceToken;
+    static dispatch_queue_t queue;
+    dispatch_once(&onceToken, ^{
+        queue = dispatch_queue_create("pw.spoti.adblock.save", DISPATCH_QUEUE_SERIAL);
+    });
+    NSDictionary *snapshot = [sg_adCounts copy];
+    dispatch_async(queue, ^{
+        [NSUserDefaults.standardUserDefaults setObject:snapshot forKey:kAdBlockCountsKey];
+    });
+}
+
+void SGRecordBlockedAds(NSString *category, NSUInteger count) {
+    if (!category || count == 0) return;
+    os_unfair_lock_lock(&sg_counterLock);
+    NSMutableDictionary *counts = countsLocked();
+    NSUInteger current = [counts[category] unsignedIntegerValue];
+    counts[category] = @(current + count);
+    scheduleSaveLocked();
+    os_unfair_lock_unlock(&sg_counterLock);
+}
+
 void SGRecordBlockedAd(NSString *category) {
-    if (!category) return;
-    @synchronized (NSUserDefaults.standardUserDefaults) {
-        NSMutableDictionary *counts = countsLocked();
-        NSUInteger current = [counts[category] unsignedIntegerValue];
-        counts[category] = @(current + 1);
-        [NSUserDefaults.standardUserDefaults setObject:counts forKey:kAdBlockCountsKey];
-    }
+    SGRecordBlockedAds(category, 1);
 }
 
 NSUInteger SGBlockedAdCount(NSString *category) {
     if (!category) return SGBlockedAdTotalCount();
-    @synchronized (NSUserDefaults.standardUserDefaults) {
-        return [countsLocked()[category] unsignedIntegerValue];
-    }
+    os_unfair_lock_lock(&sg_counterLock);
+    NSUInteger count = [countsLocked()[category] unsignedIntegerValue];
+    os_unfair_lock_unlock(&sg_counterLock);
+    return count;
 }
 
 NSUInteger SGBlockedAdTotalCount(void) {
-    @synchronized (NSUserDefaults.standardUserDefaults) {
-        NSDictionary *counts = countsLocked();
-        NSUInteger total = 0;
-        for (NSNumber *val in counts.allValues) {
-            total += val.unsignedIntegerValue;
-        }
-        return total;
+    os_unfair_lock_lock(&sg_counterLock);
+    NSDictionary *counts = countsLocked();
+    NSUInteger total = 0;
+    for (NSNumber *val in counts.allValues) {
+        total += val.unsignedIntegerValue;
     }
+    os_unfair_lock_unlock(&sg_counterLock);
+    return total;
 }
 
 void SGResetBlockedAds(void) {
-    @synchronized (NSUserDefaults.standardUserDefaults) {
-        sg_adCounts = [NSMutableDictionary dictionary];
-        [NSUserDefaults.standardUserDefaults removeObjectForKey:kAdBlockCountsKey];
-    }
+    os_unfair_lock_lock(&sg_counterLock);
+    sg_adCounts = [NSMutableDictionary dictionary];
+    scheduleSaveLocked();
+    os_unfair_lock_unlock(&sg_counterLock);
 }

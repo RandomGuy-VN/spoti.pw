@@ -104,24 +104,19 @@
 }
 %end
 
-%hook _TtC33Jam_FreeUserShuffleUpsellPageImpl32FreeUserShuffleUpsellPageService
-- (void)load {
-    if (SGAdBlockUpsellsEnabled()) {
-        SGLog(@"adblock: suppressed FreeUserShuffleUpsellPageService.load");
-        return;
-    }
-    %orig;
-}
-%end
-
 // Client Messaging Platform containers
 %hook _TtC37Messaging_ClientMessagingPlatformImpl33FullscreenContainerViewController
 - (void)viewWillAppear:(BOOL)animated {
     %orig;
     if (SGAdBlockUpsellsEnabled()) {
         self.view.hidden = YES;
+        self.view.alpha = 0;
         self.view.userInteractionEnabled = NO;
-        [self dismissViewControllerAnimated:NO completion:nil];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (self.presentingViewController) {
+                [self dismissViewControllerAnimated:NO completion:nil];
+            }
+        });
         SGRecordBlockedAd(@"Popups & Upsells");
     }
 }
@@ -132,8 +127,13 @@
     %orig;
     if (SGAdBlockUpsellsEnabled()) {
         self.view.hidden = YES;
+        self.view.alpha = 0;
         self.view.userInteractionEnabled = NO;
-        [self dismissViewControllerAnimated:NO completion:nil];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (self.presentingViewController) {
+                [self dismissViewControllerAnimated:NO completion:nil];
+            }
+        });
         SGRecordBlockedAd(@"Popups & Upsells");
     }
 }
@@ -144,8 +144,13 @@
     %orig;
     if (SGAdBlockUpsellsEnabled()) {
         self.view.hidden = YES;
+        self.view.alpha = 0;
         self.view.userInteractionEnabled = NO;
-        [self dismissViewControllerAnimated:NO completion:nil];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (self.presentingViewController) {
+                [self dismissViewControllerAnimated:NO completion:nil];
+            }
+        });
         SGRecordBlockedAd(@"Popups & Upsells");
     }
 }

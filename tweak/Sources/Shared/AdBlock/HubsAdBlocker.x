@@ -114,9 +114,7 @@ static NSDictionary *filterHubsDictionary(NSDictionary *dict) {
     }
 
     if (blocked > 0) {
-        for (NSUInteger i = 0; i < blocked; i++) {
-            SGRecordBlockedAd(@"Hubs & Shelves");
-        }
+        SGRecordBlockedAds(@"Hubs & Shelves", blocked);
     }
     return mutableDict;
 }

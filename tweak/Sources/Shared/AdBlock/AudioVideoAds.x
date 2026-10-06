@@ -3,17 +3,6 @@
 #import "Core/SGCore.h"
 #import "AdBlock.h"
 
-@interface SPTAdsProductState : NSObject
-- (BOOL)adsEnabled;
-@end
-
-%hook SPTAdsProductState
-- (BOOL)adsEnabled {
-    if (SGAdBlockAudioVideoEnabled()) return NO;
-    return %orig;
-}
-%end
-
 %hook _TtC19AdsPlatform_AdsImpl14AdsServiceImpl
 - (void)load {
     if (SGAdBlockAudioVideoEnabled()) {
@@ -50,7 +39,6 @@
     if (SGAdBlockAudioVideoEnabled()) {
         %init;
         SGRequireClasses(@[
-            @"SPTAdsProductState",
             @"_TtC19AdsPlatform_AdsImpl14AdsServiceImpl",
             @"_TtC29AdsNowPlaying_InStreamAdsImpl18InStreamAdsService",
             @"_TtC20NativeAds_LoggerImpl26NativeAdsLoggerServiceImpl"

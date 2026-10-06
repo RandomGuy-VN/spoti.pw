@@ -1,6 +1,6 @@
 // Ad blocking: suppresses audio and in-stream video ads, sponsored playlist headers and banners,
 // Hubs promotional shelves and cards, ClientMessagingPlatform upsells and fullscreen takeovers,
-// advertising network requests, and unlocks unlimited skips and on-demand playback via product state.
+// and unlocks unlimited skips and on-demand playback via remote configuration flags.
 #import <UIKit/UIKit.h>
 
 #define SGKeyAdBlockMaster         @"spotifyglass.adblock.enabled"
@@ -8,8 +8,7 @@
 #define SGKeyAdBlockBanners        @"spotifyglass.adblock.banners"
 #define SGKeyAdBlockHubs           @"spotifyglass.adblock.hubs"
 #define SGKeyAdBlockUpsells        @"spotifyglass.adblock.upsells"
-#define SGKeyAdBlockNetwork        @"spotifyglass.adblock.network"
-#define SGKeyAdBlockPremiumSpoof   @"spotifyglass.adblock.premiumSpoof"
+#define SGKeyAdBlockPlayback       @"spotifyglass.adblock.playback"
 
 // Accessors (master switch gates sub-switches; unset switches default to ON)
 BOOL SGAdBlockEnabled(void);
@@ -17,11 +16,11 @@ BOOL SGAdBlockAudioVideoEnabled(void);
 BOOL SGAdBlockBannersEnabled(void);
 BOOL SGAdBlockHubsEnabled(void);
 BOOL SGAdBlockUpsellsEnabled(void);
-BOOL SGAdBlockNetworkEnabled(void);
-BOOL SGAdBlockPremiumSpoofEnabled(void);
+BOOL SGAdBlockPlaybackEnabled(void);
 
 // Blocked counters and statistics
 void SGRecordBlockedAd(NSString *category);
+void SGRecordBlockedAds(NSString *category, NSUInteger count);
 NSUInteger SGBlockedAdCount(NSString *category);
 NSUInteger SGBlockedAdTotalCount(void);
 NSArray<NSString *> *SGBlockedAdCategories(void);

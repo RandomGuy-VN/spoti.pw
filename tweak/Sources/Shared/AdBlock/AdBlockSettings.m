@@ -28,10 +28,9 @@ UIViewController *SGAdBlockSettingsPage(void) {
             SGWithSymbol(SGSwitchRow(@"Banners & sponsored content", @"Hide sponsored playlist headers, cards and brand banners", SGKeyAdBlockBanners), @"rectangle.badge.xmark"),
             SGWithSymbol(SGSwitchRow(@"Clutter & ad shelves", @"Filter out promotional shelves and cards in Home and Search", SGKeyAdBlockHubs), @"square.grid.2x2"),
             SGWithSymbol(SGSwitchRow(@"Popups & upsells", @"Block fullscreen takeovers, bottom sheets and upsell dialogs", SGKeyAdBlockUpsells), @"xmark.diamond"),
-            SGWithSymbol(SGSwitchRow(@"Block ad network requests", @"Intercept and drop requests to Spotify advertising endpoints", SGKeyAdBlockNetwork), @"network.slash"),
         ]),
         SGSection(@"Playback", @[
-            SGWithSymbol(SGSwitchRow(@"Unlimited skips & on-demand", @"Unlock track selection, seeking, and remove the 6-skip hourly limit", SGKeyAdBlockPremiumSpoof), @"forward.fill"),
+            SGWithSymbol(SGSwitchRow(@"Unlimited skips & on-demand", @"Unlock track selection, seeking, and remove the 6-skip hourly limit", SGKeyAdBlockPlayback), @"forward.fill"),
         ]),
         countersSection(),
     ] footer:nil];

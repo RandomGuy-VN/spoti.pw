@@ -48,7 +48,7 @@ static id forcedFlag(NSString *key) {
         if ([key isEqualToString:@"ios-feature-shuffletoggleupsell.play_modes_upsell_new_style_experiment_enabled"]) return @NO;
     }
 
-    if (SGAdBlockPremiumSpoofEnabled()) {
+    if (SGAdBlockPlaybackEnabled()) {
         if ([key isEqualToString:@"on-demand"]) return @YES;
         if ([key isEqualToString:@"unrestricted"]) return @YES;
         if ([key isEqualToString:@"shuffle-eligible"]) return @YES;

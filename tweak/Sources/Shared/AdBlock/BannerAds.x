@@ -7,9 +7,6 @@
 @interface _TtC18AdsPlatform_ECMKit37AdsSponsoredPlaylistHeaderCentralView : UIView
 @end
 
-@interface _TtC35AdsEmbedded_EmbeddedCTAElementsImpl26EmbeddedAdAdapterElementUI : UIView
-@end
-
 @interface _TtC22AdsPlatform_ElementKit15HtmlAdElementUI : UIView
 @end
 
@@ -71,32 +68,11 @@
 }
 %end
 
-%hook _TtC29AdsNowPlaying_EmbeddedNPVImpl22EmbeddedNPVServiceImpl
-- (void)load {
-    if (SGAdBlockBannersEnabled()) {
-        SGLog(@"adblock: suppressed EmbeddedNPVServiceImpl.load");
-        SGRecordBlockedAd(@"Banners & Sponsored");
-        return;
-    }
-    %orig;
-}
-%end
-
 %hook _TtC35AdsEmbedded_EmbeddedCTAElementsImpl30EmbeddedCTAElementsServiceImpl
 - (void)load {
     if (SGAdBlockBannersEnabled()) {
         SGLog(@"adblock: suppressed EmbeddedCTAElementsServiceImpl.load");
         SGRecordBlockedAd(@"Banners & Sponsored");
-        return;
-    }
-    %orig;
-}
-%end
-
-%hook _TtC35AdsEmbedded_EmbeddedCTAElementsImpl32EmbeddedAdAdapterElementProvider
-- (void)load {
-    if (SGAdBlockBannersEnabled()) {
-        SGLog(@"adblock: suppressed EmbeddedAdAdapterElementProvider.load");
         return;
     }
     %orig;
@@ -133,32 +109,8 @@
 }
 %end
 
-%hook _TtC37AdsEmbedded_EmbeddedAdPresentationKit28LeavebehindAdElementProvider
-- (void)load {
-    if (SGAdBlockBannersEnabled()) {
-        SGLog(@"adblock: suppressed LeavebehindAdElementProvider.load");
-        return;
-    }
-    %orig;
-}
-%end
-
 // View-level suppression
 %hook _TtC18AdsPlatform_ECMKit37AdsSponsoredPlaylistHeaderCentralView
-- (void)didMoveToSuperview {
-    %orig;
-    if (SGAdBlockBannersEnabled()) {
-        self.hidden = YES;
-        self.userInteractionEnabled = NO;
-        if (self.superview) {
-            [self removeFromSuperview];
-            SGRecordBlockedAd(@"Banners & Sponsored");
-        }
-    }
-}
-%end
-
-%hook _TtC35AdsEmbedded_EmbeddedCTAElementsImpl26EmbeddedAdAdapterElementUI
 - (void)didMoveToSuperview {
     %orig;
     if (SGAdBlockBannersEnabled()) {
