@@ -39,6 +39,12 @@ done
 [ -n "$IN" ] || { echo "no IPA: put a decrypted Spotify .ipa in ipa/, or pass one (make build IPA=path.ipa)" >&2; exit 1; }
 [ -f "$IN" ] || { echo "no such file: $IN" >&2; exit 1; }
 
+CLEANED_IN="$ROOT/out/.cleaned-input.ipa"
+echo "==> checking and sanitizing base IPA"
+"$ROOT/scripts/clean-ipa.py" "$IN" "$CLEANED_IN"
+IN="$CLEANED_IN"
+trap 'rm -f "$CLEANED_IN"' EXIT
+
 need() { command -v "$1" >/dev/null 2>&1 || { echo "missing $1 -> $2" >&2; exit 1; }; }
 need gmake "brew install make"
 need ldid "brew install ldid"

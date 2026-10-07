@@ -1,47 +1,80 @@
-// Audio and in-stream video ad blocking: hooks Spotify's ads product state
-// and disables the Swift ad service loaders.
+// Audio and in-stream video ad blocking: intercepts ad tracks reported
+// by SPTEsperantoPlayer and automatically skips them immediately.
+#import <Foundation/Foundation.h>
 #import "Core/SGCore.h"
 #import "AdBlock.h"
+#import "Headers/SPTPlayer.h"
 
-%hook _TtC19AdsPlatform_AdsImpl14AdsServiceImpl
-- (void)load {
-    if (SGAdBlockAudioVideoEnabled()) {
-        SGLog(@"adblock: suppressed AdsServiceImpl.load");
-        SGRecordBlockedAd(@"Audio & Video");
-        return;
+@interface SPTPlayerTrack (AdBlock)
+- (BOOL)isAdvertisement;
+- (BOOL)spt_metadata_isAdvertisement;
+@end
+
+static NSString *sg_lastSkippedAdURI = nil;
+static NSTimeInterval sg_lastSkippedTime = 0;
+
+static BOOL isTrackAd(SPTPlayerTrack *track) {
+    if (!track) return NO;
+
+    if ([track respondsToSelector:@selector(isAdvertisement)] && [track isAdvertisement]) {
+        return YES;
     }
-    %orig;
+    if ([track respondsToSelector:@selector(spt_metadata_isAdvertisement)] && [track spt_metadata_isAdvertisement]) {
+        return YES;
+    }
+
+    id uri = [track respondsToSelector:@selector(URI)] ? track.URI : nil;
+    NSString *uriStr = [uri isKindOfClass:NSURL.class] ? [(NSURL *)uri absoluteString] : [uri description];
+    if (uriStr && ([uriStr containsString:@":ad:"] || [uriStr containsString:@":advertisement:"])) {
+        return YES;
+    }
+
+    if ([track respondsToSelector:@selector(metadata)]) {
+        NSDictionary *meta = track.metadata;
+        if ([meta isKindOfClass:NSDictionary.class]) {
+            if ([meta[@"is_advertisement"] boolValue] ||
+                [meta[@"is_ad"] boolValue] ||
+                meta[@"ad_id"] != nil) {
+                return YES;
+            }
+        }
+    }
+
+    return NO;
 }
-%end
 
-%hook _TtC29AdsNowPlaying_InStreamAdsImpl18InStreamAdsService
-- (void)load {
-    if (SGAdBlockAudioVideoEnabled()) {
-        SGLog(@"adblock: suppressed InStreamAdsService.load");
-        SGRecordBlockedAd(@"Audio & Video");
-        return;
-    }
-    %orig;
-}
-%end
+%hook SPTEsperantoPlayer
+- (id)state {
+    id state = %orig;
+    if (!SGAdBlockAudioVideoEnabled() || !state) return state;
 
-%hook _TtC20NativeAds_LoggerImpl26NativeAdsLoggerServiceImpl
-- (void)load {
-    if (SGAdBlockAudioVideoEnabled()) {
-        SGLog(@"adblock: suppressed NativeAdsLoggerServiceImpl.load");
-        return;
+    if ([state respondsToSelector:@selector(track)]) {
+        SPTPlayerTrack *track = [(SPTPlayerState *)state track];
+        if (track && isTrackAd(track)) {
+            id uri = [track respondsToSelector:@selector(URI)] ? track.URI : nil;
+            NSString *uriStr = [uri isKindOfClass:NSURL.class] ? [(NSURL *)uri absoluteString] : [uri description];
+            NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
+
+            if (![uriStr isEqualToString:sg_lastSkippedAdURI] || (now - sg_lastSkippedTime > 1.0)) {
+                sg_lastSkippedAdURI = [uriStr copy];
+                sg_lastSkippedTime = now;
+
+                SGLog(@"adblock: audio ad track detected (%@), skipping immediately", track.trackTitle ?: uriStr);
+                SGRecordBlockedAd(@"Audio & Video");
+
+                if ([self respondsToSelector:@selector(skipToNextTrack)]) {
+                    [(id<SPTPlayer>)self skipToNextTrack];
+                }
+            }
+        }
     }
-    %orig;
+    return state;
 }
 %end
 
 %ctor {
     if (SGAdBlockAudioVideoEnabled()) {
         %init;
-        SGRequireClasses(@[
-            @"_TtC19AdsPlatform_AdsImpl14AdsServiceImpl",
-            @"_TtC29AdsNowPlaying_InStreamAdsImpl18InStreamAdsService",
-            @"_TtC20NativeAds_LoggerImpl26NativeAdsLoggerServiceImpl"
-        ]);
+        SGRequireClasses(@[@"SPTEsperantoPlayer"]);
     }
 }

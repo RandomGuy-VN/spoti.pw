@@ -16,6 +16,10 @@ static id forcedFlag(NSString *key) {
         if ([key isEqualToString:@"ab-ad-player-targeting"]) return @0;
         if ([key isEqualToString:@"allow-advertising-id-transmission"]) return @0;
         if ([key isEqualToString:@"restrict-advertising-id-transmission"]) return @1;
+        if ([key isEqualToString:@"ios-adsnowplaying-embeddednpv-impl.enable_ads_on_podcast"]) return @NO;
+        if ([key isEqualToString:@"ios-adsnowplaying-embeddednpv-impl.embedded_ad_html_element_enabled"]) return @NO;
+        if ([key isEqualToString:@"ios-feature-adonappopen.frequency_capping_enabled"]) return @NO;
+        if ([key isEqualToString:@"ios-betamax-sdkintegration.kub_adap_on_ads_enabled"]) return @NO;
     }
 
     if (SGAdBlockBannersEnabled()) {
@@ -32,6 +36,9 @@ static id forcedFlag(NSString *key) {
         if ([key isEqualToString:@"enable_home_banner_ads"]) return @NO;
         if ([key isEqualToString:@"enable_home_sponsored_ad"]) return @NO;
         if ([key isEqualToString:@"enable_home_sponsored_ads"]) return @NO;
+        if ([key isEqualToString:@"ios-nowplaying-scroll-impl.unified_leavebehind_npv_scroll_music_enabled"]) return @NO;
+        if ([key isEqualToString:@"ios-nowplaying-scroll-impl.unified_leavebehind_npv_scroll_podcast_enabled"]) return @NO;
+        if ([key isEqualToString:@"ios-adsembedded-embeddedctaelements-impl.small_ad_row_variant_enabled"]) return @NO;
     }
 
     if (SGAdBlockUpsellsEnabled()) {
@@ -46,6 +53,24 @@ static id forcedFlag(NSString *key) {
         if ([key isEqualToString:@"ios-feature-shuffletoggleupsell.is_enabled_pt2"]) return @NO;
         if ([key isEqualToString:@"ios-feature-shuffletoggleupsell.linear_upsell_new_style_experiment_enabled"]) return @NO;
         if ([key isEqualToString:@"ios-feature-shuffletoggleupsell.play_modes_upsell_new_style_experiment_enabled"]) return @NO;
+        if ([key isEqualToString:@"ios-content-windowing.enable_track_preview_upsell"]) return @NO;
+        if ([key isEqualToString:@"ios-feature-bluejay.schedule_prompt_capped_upsell_enabled"]) return @NO;
+        if ([key isEqualToString:@"ios-feature-magpie.upsellability_enabled"]) return @NO;
+        if ([key isEqualToString:@"ios-feature-nowplaying-modes.video_first_shuffle_upsell_enabled"]) return @NO;
+        if ([key isEqualToString:@"ios-feature-nowplaying-modes.video_first_skip_limit_upsell"]) return @NO;
+        if ([key isEqualToString:@"ios-jam-freehostedjamsupsell-impl.free_hosted_jams_upsell_enabled"]) return @NO;
+        if ([key isEqualToString:@"ios-jam-freeusershuffleupsellsheetpage-impl.free_user_shuffle_upsell_sheet_enabled"]) return @NO;
+        if ([key isEqualToString:@"ios-jam-freeuserskipupsellpage-impl.free_user_skip_upsell_sheet_enabled"]) return @NO;
+        if ([key isEqualToString:@"ios-messaging-reduceinterventions-impl.enable_message_reinvent_free_n_p_v_suggestions_upsell"]) return @NO;
+        if ([key isEqualToString:@"ios-reinventfree-contextualupsellpremiumpromo-impl.is_promo_cta_enabled"]) return @NO;
+        if ([key isEqualToString:@"ios-reinventfree-contextualupsellpremiumpromo-impl.show_time_cap_upsell_with_premium_badge"]) return @NO;
+        if ([key isEqualToString:@"ios-reinventfree-controllerui-impl.enable_video_time_cap_upsell"]) return @NO;
+        if ([key isEqualToString:@"ios-reinventfree-controllerui-impl.enable_video_time_cap_upsell_on_search"]) return @NO;
+        if ([key isEqualToString:@"ios-reinventfree-downloadupsellpage-impl.contextual_page_enabled"]) return @NO;
+        if ([key isEqualToString:@"ios-reinventfree-timecappivot-impl.music_video_upsell_enabled"]) return @NO;
+        if ([key isEqualToString:@"ios-settings-mediaqualitypageplugin-impl.is_gbb_upsell_enabled"]) return @NO;
+        if ([key isEqualToString:@"ios-settings-mediaqualitypageplugin-impl.should_show_pigeon_upsell"]) return @NO;
+        if ([key isEqualToString:@"ios-system-listeningparties.preview_ended_upsell_enabled"]) return @NO;
     }
 
     if (SGAdBlockPlaybackEnabled()) {
@@ -61,6 +86,12 @@ static id forcedFlag(NSString *key) {
         if ([key isEqualToString:@"enable_playback_timeout_error_ui"]) return @NO;
         if ([key isEqualToString:@"crossfade_enabled"]) return @YES;
         if ([key isEqualToString:@"automix_enabled"]) return @YES;
+        if ([key isEqualToString:@"ios-feature-lyrics.enable_common_capping"]) return @NO;
+        if ([key isEqualToString:@"ios-feature-bluejay.capping_enabled"]) return @NO;
+        if ([key isEqualToString:@"ios-feature-magpie.soft_cap_enabled"]) return @NO;
+        if ([key isEqualToString:@"ios-jam-queueintegrationimpl.enable_jam_capped_premium_queue_banner"]) return @NO;
+        if ([key isEqualToString:@"ios-feature-reinventfree-ondemandui-impl.enable_premium_panel"]) return @NO;
+        if ([key isEqualToString:@"ios-feature-freeondemand.enable_free_on_demand_experiment"]) return @NO;
     }
 
     return nil;

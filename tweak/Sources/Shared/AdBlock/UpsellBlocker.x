@@ -1,8 +1,8 @@
 // Upsells and promotional modal blocking: drops fullscreen takeovers,
 // promotional bottom sheets, upsell banner elements, and Encore upsell dialogs.
+#import <UIKit/UIKit.h>
 #import "Core/SGCore.h"
 #import "AdBlock.h"
-#import <UIKit/UIKit.h>
 
 @interface _TtC37Messaging_ClientMessagingPlatformImpl33FullscreenContainerViewController : UIViewController
 @end
@@ -29,87 +29,11 @@
 - (void)presentPopUp:(id)popUp;
 @end
 
-// Upsell services
-%hook _TtC19Upsells_ServiceImpl18UpsellsServiceImpl
-- (void)load {
-    if (SGAdBlockUpsellsEnabled()) {
-        SGLog(@"adblock: suppressed UpsellsServiceImpl.load");
-        SGRecordBlockedAd(@"Popups & Upsells");
-        return;
-    }
-    %orig;
-}
-%end
-
-%hook _TtC31PremiumUpsell_UpsellServiceImpl17UpsellServiceImpl
-- (void)load {
-    if (SGAdBlockUpsellsEnabled()) {
-        SGLog(@"adblock: suppressed Premium UpsellServiceImpl.load");
-        SGRecordBlockedAd(@"Popups & Upsells");
-        return;
-    }
-    %orig;
-}
-%end
-
-%hook _TtC45ReinventFree_ContextualUpsellPremiumPromoImpl39ContextualUpsellPremiumPromoServiceImpl
-- (void)load {
-    if (SGAdBlockUpsellsEnabled()) {
-        SGLog(@"adblock: suppressed ContextualUpsellPremiumPromoServiceImpl.load");
-        SGRecordBlockedAd(@"Popups & Upsells");
-        return;
-    }
-    %orig;
-}
-%end
-
-%hook _TtC40Referrals_ReferralsUpsellCardElementImpl37ReferralsUpsellCardElementServiceImpl
-- (void)load {
-    if (SGAdBlockUpsellsEnabled()) {
-        SGLog(@"adblock: suppressed ReferralsUpsellCardElementServiceImpl.load");
-        SGRecordBlockedAd(@"Popups & Upsells");
-        return;
-    }
-    %orig;
-}
-%end
-
-%hook _TtC31ReinventFree_DownloadUpsellImpl21DownloadUpsellService
-- (void)load {
-    if (SGAdBlockUpsellsEnabled()) {
-        SGLog(@"adblock: suppressed DownloadUpsellService.load");
-        return;
-    }
-    %orig;
-}
-%end
-
-%hook _TtC28Jam_FreeHostedJamsUpsellImpl31FreeHostedJamsUpsellServiceImpl
-- (void)load {
-    if (SGAdBlockUpsellsEnabled()) {
-        SGLog(@"adblock: suppressed FreeHostedJamsUpsellServiceImpl.load");
-        return;
-    }
-    %orig;
-}
-%end
-
-%hook _TtC30Jam_FreeUserSkipUpsellPageImpl29FreeUserSkipUpsellPageService
-- (void)load {
-    if (SGAdBlockUpsellsEnabled()) {
-        SGLog(@"adblock: suppressed FreeUserSkipUpsellPageService.load");
-        return;
-    }
-    %orig;
-}
-%end
-
-// Client Messaging Platform containers
+// Client Messaging Platform container view controllers
 %hook _TtC37Messaging_ClientMessagingPlatformImpl33FullscreenContainerViewController
 - (void)viewWillAppear:(BOOL)animated {
     %orig;
     if (SGAdBlockUpsellsEnabled()) {
-        self.view.hidden = YES;
         self.view.alpha = 0;
         self.view.userInteractionEnabled = NO;
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -126,7 +50,6 @@
 - (void)viewWillAppear:(BOOL)animated {
     %orig;
     if (SGAdBlockUpsellsEnabled()) {
-        self.view.hidden = YES;
         self.view.alpha = 0;
         self.view.userInteractionEnabled = NO;
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -143,7 +66,6 @@
 - (void)viewWillAppear:(BOOL)animated {
     %orig;
     if (SGAdBlockUpsellsEnabled()) {
-        self.view.hidden = YES;
         self.view.alpha = 0;
         self.view.userInteractionEnabled = NO;
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -156,17 +78,14 @@
 }
 %end
 
-// In-view banner elements
+// In-view banner elements: use alpha = 0 to avoid breaking Encore/StackView layouts
 %hook _TtC37Messaging_ClientMessagingPlatformImpl33ClientMessagingPlatformBannerView
 - (void)didMoveToSuperview {
     %orig;
     if (SGAdBlockUpsellsEnabled()) {
-        self.hidden = YES;
+        self.alpha = 0;
         self.userInteractionEnabled = NO;
-        if (self.superview) {
-            [self removeFromSuperview];
-            SGRecordBlockedAd(@"Popups & Upsells");
-        }
+        SGRecordBlockedAd(@"Popups & Upsells");
     }
 }
 %end
@@ -175,12 +94,9 @@
 - (void)didMoveToSuperview {
     %orig;
     if (SGAdBlockUpsellsEnabled()) {
-        self.hidden = YES;
+        self.alpha = 0;
         self.userInteractionEnabled = NO;
-        if (self.superview) {
-            [self removeFromSuperview];
-            SGRecordBlockedAd(@"Popups & Upsells");
-        }
+        SGRecordBlockedAd(@"Popups & Upsells");
     }
 }
 %end
@@ -189,12 +105,9 @@
 - (void)didMoveToSuperview {
     %orig;
     if (SGAdBlockUpsellsEnabled()) {
-        self.hidden = YES;
+        self.alpha = 0;
         self.userInteractionEnabled = NO;
-        if (self.superview) {
-            [self removeFromSuperview];
-            SGRecordBlockedAd(@"Popups & Upsells");
-        }
+        SGRecordBlockedAd(@"Popups & Upsells");
     }
 }
 %end
@@ -203,12 +116,9 @@
 - (void)didMoveToSuperview {
     %orig;
     if (SGAdBlockUpsellsEnabled()) {
-        self.hidden = YES;
+        self.alpha = 0;
         self.userInteractionEnabled = NO;
-        if (self.superview) {
-            [self removeFromSuperview];
-            SGRecordBlockedAd(@"Popups & Upsells");
-        }
+        SGRecordBlockedAd(@"Popups & Upsells");
     }
 }
 %end
@@ -264,5 +174,15 @@ static BOOL isUpsellDialog(id popUp) {
 %ctor {
     if (SGAdBlockUpsellsEnabled()) {
         %init;
+        SGRequireClasses(@[
+            @"_TtC37Messaging_ClientMessagingPlatformImpl33FullscreenContainerViewController",
+            @"_TtC37Messaging_ClientMessagingPlatformImpl28ModalContainerViewController",
+            @"_TtC37Messaging_ClientMessagingPlatformImpl52ClientMessagingPlatformBottomSheetPageViewController",
+            @"_TtC37Messaging_ClientMessagingPlatformImpl33ClientMessagingPlatformBannerView",
+            @"_TtC18Upsells_ElementKitP33_11E507536F1F78CA735FB7F17658749321UpsellBannerElementUI",
+            @"_TtC24Jam_QueueIntegrationImpl28PremiumUpsellBannerElementUI",
+            @"_TtC19ReinventFree_ECMKit25PremiumUpsellControlPanel",
+            @"SPTEncorePopUpPresenter"
+        ]);
     }
 }
