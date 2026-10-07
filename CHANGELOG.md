@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.23.0](https://github.com/RandomGuy-VN/spoti.pw/compare/v0.22.0...v0.23.0) (2026-10-07)
+
+
+### Features
+
+* integrate ad blocker and premium playback unlocking ([e2276f6](https://github.com/RandomGuy-VN/spoti.pw/commit/e2276f6fa6f0da518c1a6e446b698f3106b10876))
+
+
+### Fixes
+
+* declare interfaces for ad view and controller classes ([abe37a4](https://github.com/RandomGuy-VN/spoti.pw/commit/abe37a4d98acfb47ff79cc4c801e0f5eb57f7e65))
+* declare SPTEsperantoPlayer interface and typecast player instance in AudioVideoAds ([3613cb6](https://github.com/RandomGuy-VN/spoti.pw/commit/3613cb6f8ff76e6e49965cbdf11b3b267ea5ecc5))
+* eliminate crash-prone hooks and use stable ad blocking architecture ([5d7cee9](https://github.com/RandomGuy-VN/spoti.pw/commit/5d7cee99e32843175008ff7b70198967a858227f))
+* Remove leftover debug line that reshows update notice every launch ([425d68b](https://github.com/RandomGuy-VN/spoti.pw/commit/425d68bc1761e90a6b5828864720511bcef79fa9))
+* sanitize input IPA to prevent double dyld injection and ensure crash-free ad blocking ([6ff9a45](https://github.com/RandomGuy-VN/spoti.pw/commit/6ff9a4559366ff942f31761a9e481e06998a316e))
+
 ## [0.22.0](https://github.com/skopevoj/spoti.pw/compare/v0.21.1...v0.22.0) (2026-09-23)
 
 
