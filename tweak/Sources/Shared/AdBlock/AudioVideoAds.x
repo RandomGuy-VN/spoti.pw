@@ -5,6 +5,9 @@
 #import "AdBlock.h"
 #import "Headers/SPTPlayer.h"
 
+@interface SPTEsperantoPlayer : NSObject <SPTPlayer>
+@end
+
 @interface SPTPlayerTrack (AdBlock)
 - (BOOL)isAdvertisement;
 - (BOOL)spt_metadata_isAdvertisement;
@@ -62,8 +65,9 @@ static BOOL isTrackAd(SPTPlayerTrack *track) {
                 SGLog(@"adblock: audio ad track detected (%@), skipping immediately", track.trackTitle ?: uriStr);
                 SGRecordBlockedAd(@"Audio & Video");
 
-                if ([self respondsToSelector:@selector(skipToNextTrack)]) {
-                    [(id<SPTPlayer>)self skipToNextTrack];
+                id<SPTPlayer> player = (id<SPTPlayer>)self;
+                if ([player respondsToSelector:@selector(skipToNextTrack)]) {
+                    [player skipToNextTrack];
                 }
             }
         }
